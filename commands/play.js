@@ -23,15 +23,7 @@ var Module = (function () {
             }
             const ids = await Youtube.getYoutubeIds(args[0]);
             ids.map((id) => {
-                BasicActions.send(message, `Try to download song with id "${id}"`);
-                Queue.play(id, permanent)
-                        .then((song) => {
-                            BasicActions.send(message, `Added song "${song.title}" (${song.videoId}) to the queue`);
-                        })
-                        .catch((err) => {
-                            console.error(`Error: ${err}`);
-                            BasicActions.send(message, `Error: ${err}`);
-                        });
+                Queue.play(message, id, permanent);
             });
         } catch (err) {
             console.error(`Error (p:${args[0]}): ${err}`);
