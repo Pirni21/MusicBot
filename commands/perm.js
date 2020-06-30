@@ -17,14 +17,7 @@ var Module = (function () {
             BasicActions.send(message, `Try to add all songs: `);
             files.map((file) => {
                 let id = file.substring(0, file.length - 4);
-                Queue.play(id)
-                        .then((song) => {
-                            BasicActions.send(message, `Added song "${song.title}" (${song.videoId}) to the queue`);
-                        })
-                        .catch((err) => {
-                            console.error(`Error: ${err}`);
-                            BasicActions.send(message, `Error: ${err}`);
-                        });
+                Queue.play(message, id);
             });
         } catch (err) {
             console.error(`Error: ${err}`);
