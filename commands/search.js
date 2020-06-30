@@ -25,9 +25,7 @@ var Module = (function () {
             searchParameters = searchParameters.trim();
             if (searchParameters.length == 0) throw 'Cannot find a parameter';
             const id = await Youtube.searchForName(searchParameters);
-            BasicActions.send(message, `Try to downlaod song with id "${id}"`);
-            const song = await Queue.play(id, permanent);
-            BasicActions.send(message, `Added song "${song.title}" (${song.videoId}) to the queue`);
+            Queue.play(message, id, permanent);
         } catch (err) {
             console.error(`Error (s:${searchParameters}): ${err}`);
             BasicActions.send(message, `Error: ${err}`);

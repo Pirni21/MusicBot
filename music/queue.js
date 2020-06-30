@@ -5,33 +5,72 @@ const Metadata = require('../core/metadata');
 const config = require('../configs/config.json');
 const fs = require('fs');
 const player = require('./player');
+const { download } = require('./downloader');
+const BasicActions = require('../core/basics');
+const { time } = require('console');
 
 AuxPlayer.init(songFinished);
 let songQueue = [];
+let downloadList = [];
+let currDownloading = 0;
 
 let interrupt = false;
 let paused = false;
 let isShuffling = false;
 
-async function play(id, permanent) {
+async function play(message, id, permanent) {
     let foundSong = findSongById(id);
     if (!foundSong) foundSong = await findInFileSystem(id);
     if (!foundSong) {
-        console.log('Starts downloading video with id ' + id);
-        foundSong = await Downloader.download(id, permanent);
-        let metadata = await Metadata.get(foundSong.file);
-        foundSong.duration = metadata.duration;
-        console.log(foundSong.title + ' downloaded');
-    } else {
-        console.log(`${foundSong.title} has been added from filesystem or queue`); 
+        BasicActions.send(message, `Added song with id "${id}" to downlaod list`);
+        addToDownloadList(message, id, permanent)
+        return;
     }
+
+    BasicActions.send(message, `Added song "${foundSong.title}" (${foundSong.videoId}) to the queue`);
+    console.log(`${foundSong.title} has been added from filesystem or queue`);
     songQueue.push(foundSong);
     playSong();
-    return foundSong;
+}
+
+function addToDownloadList(message, id, permanent) {
+    downloadList.push({
+        id,
+        permanent,
+        message
+    });
+
+    tryToDownload();
+}
+
+function tryToDownload() {
+    if (currDownloading < config.downloadLimit && downloadList.length > 0) {
+        currDownloading++;
+        let toDownload = downloadList.shift();
+        downloadWrapper(toDownload);
+    }
+}
+
+async function downloadWrapper(toDownload) {
+    try {
+        console.log('Starts downloading video with id ' + toDownload.id);
+        let song = await Downloader.download(toDownload.id, toDownload.permanent);
+        let metadata = await Metadata.get(song.file);
+        song.duration = metadata.duration;
+        currDownloading--;
+        songQueue.push(song);
+        console.log(song.title + ' downloaded');
+        BasicActions.send(toDownload.message, `Added song "${song.title}" (${song.videoId}) to the queue`);
+        tryToDownload();
+        playSong();
+    } catch (err) {
+        console.error(`Error: ${err}`);
+        BasicActions.send(toDownload.message, `Error: ${err}`);
+    }
 }
 
 function skip(ignoreCheck = false) {
-    if (!ignoreCheck) 
+    if (!ignoreCheck)
         if (!AuxPlayer.running() || songQueue.length == 0) throw 'Queue is empty or no song is currently being played.';
     AuxPlayer.stop();
     DiscordPlayer.stop();

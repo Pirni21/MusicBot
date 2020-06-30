@@ -23,7 +23,8 @@
         "trackUrl": "https://api.spotify.com/v1/tracks/",
         "playlistUrl": "https://api.spotify.com/v1/playlists/"
     },
-    "playlistLimit": 25,
+    "playlistLimit": 100,
+    "downloadLimit": 3,
     "musicDir": "./music/songs",
     "permMusicDir": "./music/permSongs"
 }
