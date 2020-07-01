@@ -31,7 +31,9 @@ var Module = (function () {
             fs.readdir(config.permMusicDir, (err, files) => {
                 if (err) return reject('Add all permanent read error: ' + err);
                 for (const file of files) {
-                    permFiles.push(file);
+                    if (file.endsWith('.mp3')) {
+                        permFiles.push(file);
+                    }
                 }
                 resolve(permFiles);
             });
