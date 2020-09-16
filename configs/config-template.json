@@ -1,0 +1,26 @@
+{
+    "prefix": ".",
+    "token": "",
+    "admins": [],
+    "moderators": [],
+    "downloader": {
+        "ffmpeg": "/usr/bin/ffmpeg",
+        "quality": "highest",
+        "queueParallelism": 4,
+        "progressTimeout": 2000
+    },
+    "youtube": {
+        "token": "AIzaSyD3DLxDlBJeBS7g6LHYxojNBlJGTwV59qA",
+        "playlistUrl": "https://www.youtube.com/playlist?list="
+    },
+    "spotify": {
+        "id": "39fe22a7edec4e02b8fc780e1b843bd2",
+        "secret": "8fd3af1938124b9382d46d72cd7b6131",
+        "trackUrl": "https://api.spotify.com/v1/tracks/",
+        "playlistUrl": "https://api.spotify.com/v1/playlists/"
+    },
+    "playlistLimit": 100,
+    "downloadLimit": 3,
+    "musicDir": "./music/songs",
+    "permMusicDir": "./music/permSongs"
+}
