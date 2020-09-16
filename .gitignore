@@ -1,3 +1,4 @@
 .vscode
 music/permSongs/*.mp3
 music/songs/*.mp3
+node_modules
