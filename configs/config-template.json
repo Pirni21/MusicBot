@@ -10,7 +10,7 @@
         "progressTimeout": 2000
     },
     "youtube": {
-        "token": "AIzaSyD3DLxDlBJeBS7g6LHYxojNBlJGTwV59qA",
+        "token": "",
         "playlistUrl": "https://www.youtube.com/playlist?list="
     },
     "spotify": {
