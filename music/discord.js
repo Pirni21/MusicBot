@@ -56,7 +56,6 @@ function play(song) {
 
 function stop() {
     broadcast.end();
-    if (dispatcher) dispatcher.end();
 }
 
 function reset() {
@@ -78,7 +77,7 @@ async function broadcastNewSong(song) {
     const iterable = informChannels.values();
     const deleteKeys = [];
 
-    for (let channel of iterable) { 
+    for (let channel of iterable) {
         try {
             channel.send(`Starts playing "${song.title}".`);
         } catch (err) {

@@ -22,7 +22,7 @@ async function play(message, id, permanent) {
     let foundSong = findSongById(id);
     if (!foundSong) foundSong = await findInFileSystem(id);
     if (!foundSong) {
-        BasicActions.send(message, `Added song with id "${id}" to downlaod list`);
+        BasicActions.send(message, `Added song with id "${id}" to download list`);
         addToDownloadList(message, id, permanent)
         return;
     }

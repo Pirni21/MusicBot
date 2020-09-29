@@ -8,7 +8,6 @@ client.commands = new Discord.Collection();
 const cooldowns = new Discord.Collection();
 
 let moderatorOnly = false;
-DiscordPlayer.init(client);
 
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 
@@ -18,6 +17,8 @@ for (const file of commandFiles) {
 }
 
 client.login(token);
+
+DiscordPlayer.init(client);
 
 client.once('ready', () => {
     console.log('Ready!');

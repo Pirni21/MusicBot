@@ -11,7 +11,7 @@
   "dependencies": {
     "@discordjs/opus": "^0.3.2",
     "discord": "^0.8.2",
-    "discord.js": "^12.2.0",
+    "discord.js": "^12.3.1",
     "ffmpeg-static": "^4.2.2",
     "mpg123": "^0.2.3",
     "music-metadata": "^6.4.0",
