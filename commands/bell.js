@@ -10,7 +10,7 @@ const public = {
 
 function execute(message, args) {
     try {
-        Queue.play(message, '0buJ8YqKIZI', true);
+        Queue.play(message, 'glocke', true);
     } catch (err) {
         console.error(`Error: ${err}`);
         BasicActions.send(message, `Error: ${err}`);
