@@ -14,8 +14,8 @@
         "playlistUrl": "https://www.youtube.com/playlist?list="
     },
     "spotify": {
-        "id": "39fe22a7edec4e02b8fc780e1b843bd2",
-        "secret": "8fd3af1938124b9382d46d72cd7b6131",
+        "id": "",
+        "secret": "",
         "trackUrl": "https://api.spotify.com/v1/tracks/",
         "playlistUrl": "https://api.spotify.com/v1/playlists/"
     },
