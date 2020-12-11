@@ -3,12 +3,6 @@
     "token": "",
     "admins": [],
     "moderators": [],
-    "downloader": {
-        "ffmpeg": "/usr/bin/ffmpeg",
-        "quality": "highest",
-        "queueParallelism": 4,
-        "progressTimeout": 2000
-    },
     "youtube": {
         "token": "",
         "playlistUrl": "https://www.youtube.com/playlist?list="

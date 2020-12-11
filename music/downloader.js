@@ -1,32 +1,31 @@
 const config = require('../configs/config.json');
-const DownloaderBuilder = require("youtube-mp3-downloader");
 const fs = require('fs');
 const path = require('path');
+const { spawn } = require('child_process');
 
 function download(id, permanent) {
     return new Promise((resolve, reject) => {
         try {
-            let songDir = permanent ? config.permMusicDir : config.musicDir;
-            const Downloader = new DownloaderBuilder({
-                "ffmpegPath": config.downloader.ffmpeg,
-                "outputPath": songDir,
-                "youtubeVideoQuality": config.downloader.quality,
-                "queueParallelism": config.downloader.queueParallelism,
-                "progressTimeout": config.downloader.progressTimeout
+            let songpath = '';
+
+            if (permanent)
+                songpath = config.permMusicDir;
+            else
+                songpath = config.musicDir;
+            
+            const ytdl = spawn('youtube-dl', ['-f', 'bestaudio', '--extract-audio', '--add-metadata', '--audio-format', 'mp3', '--output', `${songpath}/%(id)s.%(ext)s`, `${id}`]);
+            let err = false;
+
+            ytdl.stderr.on('data', (data) => {
+                err = true;
+                console.error(`${data}`);
             });
 
-            Downloader.download(id, `${id}.mp3`);
-            Downloader.once("finished", function (err, data) {
-                if (err) {
-                    reject(err);
-                    return;
-                }
-                data.permanent = permanent;
-                resolve(data);
-            });
-            
-            Downloader.once("error", function (err) {
-                reject(err);
+            ytdl.on('close', (code) => {
+                if (err)
+                    reject("Unable to download!");
+                else
+                    resolve({file: `${songpath}/${id}.mp3`});
             });
         } catch (err) {
             reject(err);
