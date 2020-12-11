@@ -58,9 +58,10 @@ async function downloadWrapper(toDownload) {
         let metadata = await Metadata.get(song.file);
         song.duration = metadata.duration;
         currDownloading--;
-        songQueue.push(song);
-        console.log(song.title + ' downloaded');
-        BasicActions.send(toDownload.message, `Added song "${song.title}" (${song.videoId}) to the queue`);
+        metadata.file = song.file;
+        songQueue.push(metadata);
+        console.log(metadata.title + ' downloaded');
+        BasicActions.send(toDownload.message, `Added song "${metadata.title}" to the queue`);
         tryToDownload();
         playSong();
     } catch (err) {
