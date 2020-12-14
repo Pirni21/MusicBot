@@ -15,7 +15,7 @@ async function execute(message, args) {
         if (song) {
             let progress = await Queue.progress();
             let time = BasicActions.convertTime(song.duration * progress);
-            returnValue = `${song.title} (Progress: ${time})`;
+            returnValue = `${song.title} (Progress: ${time} / ${BasicActions.convertTime(song.duration)})`;
         }
         BasicActions.send(message, returnValue);
     } catch (err) {
