@@ -1,10 +1,18 @@
-const Spotify = require('node-spotify-api');
+const Spotify = require('spotify-web-api-node');
 const config = require('../configs/config.json');
 
 const spotify = new Spotify({
-    id: config.spotify.id,
-    secret: config.spotify.secret
+    clientId: config.spotify.id,
+    clientSecret: config.spotify.secret
 });
+
+spotify.clientCredentialsGrant()
+  .then((data) => {
+    spotify.setAccessToken(data.body['access_token']);
+  })
+  .catch((err) => {
+    console.error('Something went wrong when retrieving an access token from spotify: ', err);
+  });
 
 async function getSpotifyTrackNames(url) {
     const isPlaylist = url.includes('playlist');
@@ -13,15 +21,10 @@ async function getSpotifyTrackNames(url) {
     
     if(!isPlaylist) return [details.name + " " + details.artists[0].name];
 
-    let tracks = details.tracks.items;
+    let tracks = details.items;
     tracks = tracks.slice(0, config.playlistLimit);
-    let promises = [];
-    for (let trackWrapper of tracks) {
-        promises.push(getSpotifyDetails(trackWrapper.track.id));
-    }
-    tracks = await Promise.all(promises);
-    
     tracks = tracks.map((track) => {
+        track = track.track;
         return track.name + " " + track.artists[0].name;
     });
     return tracks;
@@ -35,9 +38,17 @@ function extractSpotifyId(url) {
     return url.substring(url.length - 22);
 }
 
-function getSpotifyDetails(id, isPlaylist = false) {
-    const url = isPlaylist ? config.spotify.playlistUrl + id : config.spotify.trackUrl + id;
-    return spotify.request(url)
+async function getSpotifyDetails(id, isPlaylist = false) {
+    let promise;
+    if (isPlaylist) {
+        promise = spotify.getPlaylistTracks(id);
+    } else {
+        promise = spotify.getTrack(id)
+    };
+
+    let res = await promise;
+    if (res.statusCode >= 400) throw `Cannot find spotify ${isPlaylist ? 'playlist' : 'song'} with id ${id}`;
+    return res.body;
 }
 
 module.exports = {
