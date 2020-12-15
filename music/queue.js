@@ -27,7 +27,7 @@ async function play(message, id, permanent) {
         return;
     }
 
-    BasicAcctions.send(message, `Added song "${foundSong.title}" (${foundSong.videoId}) to the queue`);
+    BasicActions.send(message, `Added song "${foundSong.title}" (${foundSong.videoId}) to the queue`);
     console.log(`${foundSong.title} has been added from filesystem or queue`);
     songQueue.push(foundSong);
     playSong();
