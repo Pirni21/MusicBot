@@ -98,6 +98,7 @@ function reset() {
     interrupt = true;
     DiscordPlayer.reset();
     clear();
+    currDownloading = 0;
     interrupt = false;
 }
 
