@@ -3,6 +3,8 @@ const fs = require('fs');
 const path = require('path');
 const { spawn } = require('child_process');
 
+let progress = "No download in progress";
+
 function download(id, permanent) {
     return new Promise((resolve, reject) => {
         try {
@@ -13,15 +15,30 @@ function download(id, permanent) {
             else
                 songpath = config.musicDir;
             
-            const ytdl = spawn('youtube-dl', ['-f', 'bestaudio', '--extract-audio', '--add-metadata', '--audio-format', 'mp3', '--output', `${songpath}/%(id)s.%(ext)s`, `${id}`]);
+            const ytdl = spawn('youtube-dl', [
+                '-f', 'bestaudio',
+                '--extract-audio',
+                '--add-metadata',
+                '--audio-format', 'mp3',
+                '--output', `${songpath}/%(id)s.%(ext)s`,
+                `${id}`
+            ]);
+
             let err = false;
+
+            ytdl.stdout.on('data', (data) => {
+                progress = data;
+            });
 
             ytdl.stderr.on('data', (data) => {
                 err = true;
+                progress = data;
                 console.error(`${data}`);
             });
 
             ytdl.on('close', (code) => {
+                progress = "No download in progress";
+
                 if (err)
                     reject("Unable to download!");
                 else
@@ -57,8 +74,13 @@ function deleteAll() {
     });
 }
 
+function getProgress() {
+    return progress;
+}
+
 module.exports = {
     download,
     delete: deleteSong,
-    deleteAll
+    deleteAll,
+    progress: getProgress
 }
