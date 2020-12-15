@@ -27,7 +27,7 @@ async function play(message, id, permanent) {
         return;
     }
 
-    BasicActions.send(message, `Added song "${foundSong.title}" (${foundSong.videoId}) to the queue`);
+    BasicAcctions.send(message, `Added song "${foundSong.title}" (${foundSong.videoId}) to the queue`);
     console.log(`${foundSong.title} has been added from filesystem or queue`);
     songQueue.push(foundSong);
     playSong();
@@ -65,6 +65,7 @@ async function downloadWrapper(toDownload) {
         tryToDownload();
         playSong();
     } catch (err) {
+        currDownloading--;
         console.error(`Error: ${err}`);
         BasicActions.send(toDownload.message, `Error: ${err}`);
     }
