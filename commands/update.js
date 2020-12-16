@@ -16,15 +16,21 @@ function execute(message, args) {
         const git = spawn('git', ['pull']);
     
         git.stderr.on('data', (data) => {
-            BasicActions.send(message, 'Error: The update did not work');
             console.error(`${data}`);
+        });
+
+        git.stdout.on('data', (data) => {
+            console.log(`${data}`);
         });
         
         git.on('close', (code) => {
             if (code === 0) {
                 BasicActions.send(message, 'Update: Restarting now');
                 console.log('Restarting because of update');
-                process.exit(0)
+
+                setTimeout(function() {
+                    process.exit(0);
+                }, 1000);
             } else {
                 BasicActions.send(message, 'Error: The update did not work');
                 console.error(`Git exit code: ${code}`);
