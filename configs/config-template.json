@@ -4,7 +4,6 @@
     "admins": [],
     "moderators": [],
     "youtube": {
-        "token": "",
         "playlistUrl": "https://www.youtube.com/playlist?list="
     },
     "spotify": {
