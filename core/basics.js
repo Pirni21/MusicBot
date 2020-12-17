@@ -6,7 +6,8 @@ var Module = (function () {
         delete: deleteMsgs,
         getMessage: getMessage,
         fail_if: fail_if,
-        convertTime: convertTime
+        convertTime: convertTime,
+        checkNumber: checkNumber
     }
 
     function send(message, data, path) {
@@ -52,6 +53,25 @@ var Module = (function () {
         let tempDur = Math.round(sec);
         let seconds = tempDur % 60;
         return `${Math.floor(tempDur / 60)}:${seconds < 10 ? '0': ''}${seconds}`;
+    }
+
+    function checkNumber(arg, min, max, notInRangeError = 'Number ${nr} is not in range.') {
+        const nr = parseInt(arg);
+        if (!Number.isInteger(nr)) throw 'Nr is not an integer.';
+
+        notInRangeError = replaceIfExits(notInRangeError, '${nr}', nr);
+        notInRangeError = replaceIfExits(notInRangeError, '${min}', min);
+        notInRangeError = replaceIfExits(notInRangeError, '${max}', max);
+
+        if (min && nr < min || max && nr > max) throw notInRangeError;
+        return nr;
+    }
+
+    function replaceIfExits(content, searchFor, replaceWith) {
+        if (searchFor != undefined && searchFor != null && replaceWith != undefined  && replaceWith != null && content.includes(searchFor)) {
+            content = content.replace(searchFor, replaceWith)
+        }
+        return content;
     }
 
     return public;

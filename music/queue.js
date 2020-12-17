@@ -168,9 +168,9 @@ function playSong() {
 }
 
 function deleteIfPossible(song) {
-    let foundSong = findSongById(song.videoId);
+    let foundSong = findSongById(song.id);
     if (!foundSong && !song.permanent) {
-        Downloader.delete(song.videoId)
+        Downloader.delete(song.id)
             .then(() => { /* Do nothing */ })
             .catch((err) => {
                 console.error('Delete if possible error: ' + err);

@@ -20,9 +20,8 @@ async function execute(message, args) {
         }
 
         if (args.length != 1) throw 'Args length has to be 1.';
-        const vol = parseInt(args[0]);
-        if (!Number.isInteger(vol)) throw 'Volume is not an integer.';
-        if (vol < 0 || vol > 100) throw 'Volume has to be between 0 and 100.';
+
+        const vol = BasicActions.checkNumber(args[0], 0, 100, 'Volume has to be between ${min} and ${max}.')
         volume = vol;
         Queue.volume(vol);
         BasicActions.send(message, `Volume changed.`);

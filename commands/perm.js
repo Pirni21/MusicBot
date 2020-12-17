@@ -3,37 +3,46 @@ const Queue = require('../music/queue');
 const config = require('../configs/config.json');
 const fs = require('fs');
 const Metadata = require('../core/metadata');
+const { checkNumber } = require('../core/basics');
 
 const public = {
     name: 'perm',
     description: 'Adds all permanent songs to the queue.',
     guildOnly: true,
-    usage: '[nr]',
+    usage: '[nr]*',
     execute: execute
 }
 
 async function execute(message, args) {
     try {
-        const files = await getAllPermFiles();
-        if (args.length == 1) {
-            const nr = parseInt(args[0]);
-            if (!Number.isInteger(nr)) throw 'Nr is not an integer.';
-            if (nr < 1 || nr > files.length) throw `Cannot find a song at position ${nr}.`;
-            let file = files[nr - 1];
-            let id = file.substring(0, file.length - 4);
-            Queue.play(message, id);
+        let songObjs = await getAllSongObjs();
+
+        if (songObjs.length == 0) {
+            BasicActions.send(message, 'Cannot find perm songs');
+            return;
+        }
+
+        songObjs = sortSongObjs(songObjs);
+
+        if (args.length > 0) {
+            const numbers = args.map(arg => BasicActions.checkNumber(arg, 1, songObjs.length, "Cannot find a song at position ${nr}."));
+            const choosenSongs = numbers.map(nr => songObjs[nr - 1]);
+            choosenSongs.forEach(song => Queue.play(message, song.id));  
         } else {
             BasicActions.send(message, `List of all songs: \n`);
-            let promises = files.map(file => Metadata.get(`${config.permMusicDir}/${file}`));
-            Promise.all(promises).then((songs) => {
-                let response = songs.map((song, idx) => `${idx + 1}: ${song.title}`);
-                BasicActions.send(message, response);
-            });
+            let songTitles = songObjs.map((song, idx) => `${idx + 1}: ${song.title}`);         
+            BasicActions.send(message, songTitles);
         }
     } catch (err) {
         console.error(`Error: ${err}`);
         BasicActions.send(message, `Error: ${err}`);
     }
+}
+
+async function getAllSongObjs() {
+    const files = await getAllPermFiles();
+    let promises = files.map(file => Metadata.get(`${config.permMusicDir}/${file}`));
+    return songObjs = await Promise.all(promises);
 }
 
 function getAllPermFiles() {
@@ -49,6 +58,10 @@ function getAllPermFiles() {
             resolve(permFiles);
         });
     });
+}
+
+function sortSongObjs(songObjs) {
+    return songObjs.sort((a, b) => a.title.localeCompare(b.title));
 }
 
 module.exports = public;

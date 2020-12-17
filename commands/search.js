@@ -13,7 +13,7 @@ const public = {
 }
 
 async function execute(message, args) {
-    let searchParameters = args.join(' ');
+    let searchParameters = 'Predefined';
     try {
         let permanent = false;
         if (args[0] == '-p') {
@@ -21,6 +21,7 @@ async function execute(message, args) {
             args.shift();
         }
 
+        searchParameters = args.join(' ');
         searchParameters = searchParameters.trim();
         if (searchParameters.length == 0) throw 'Cannot find a parameter';
         const id = await Youtube.searchForName(searchParameters);

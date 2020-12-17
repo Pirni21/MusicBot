@@ -1,18 +1,13 @@
-const YoutubeSearch = require('youtube-search');
+const YoutubeSearch = require('yt-search');
 const config = require('../configs/config.json');
 const YtPlaylist = require('youtube-playlist');
 const Spotify = require('./spotify');
 
-const opts = {
-    maxResults: 1,
-    key: config.youtube.token
-};
-
 async function searchForName(searchParameters) {
-    let result = await YoutubeSearch(searchParameters, opts);
-    result = result.results[0];
+    let result = await YoutubeSearch(searchParameters);
+    result = result.videos[0];
     if (!result) throw 'Cannot find a song with following parameters: ' + searchParameters;
-    return result.id;
+    return result.videoId;
 }
 
 async function getYoutubeIds(url) {
