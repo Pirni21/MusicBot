@@ -61,7 +61,13 @@ function getAllPermFiles() {
 }
 
 function sortSongObjs(songObjs) {
-    return songObjs.sort((a, b) => a.title.localeCompare(b.title));
+    return songObjs.sort((a, b) => {
+        if (!a) a = {};
+        if (!b) b = {}; 
+        a.title = a.title || "undefined";
+        b.title = b.title || "undefined";
+        return a.title.localeCompare(b.title);
+    });
 }
 
 module.exports = public;
