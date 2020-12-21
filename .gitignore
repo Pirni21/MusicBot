@@ -1,5 +1,6 @@
 .vscode
-music/permSongs/*.mp3
-music/songs/*.mp3
+music/permSongs
+music/songs
 node_modules
 configs/config.json
+!.gitkeep
