@@ -29,9 +29,9 @@ async function execute(message, args) {
             const choosenSongs = numbers.map(nr => songObjs[nr - 1]);
             choosenSongs.forEach(song => Queue.play(message, song.id));  
         } else {
-            BasicActions.send(message, `List of all songs: \n`);
+            BasicActions.send(message, `List of all songs: \n`, 60000);
             let songTitles = songObjs.map((song, idx) => `${idx + 1}: ${song.title}`);         
-            BasicActions.send(message, songTitles);
+            BasicActions.send(message, songTitles, 60000);
         }
     } catch (err) {
         console.error(`Error: ${err}`);

@@ -15,7 +15,7 @@ async function execute(message, args) {
         const idx = parseInt(args[0]);
         if (!Number.isInteger(idx)) throw 'Nr is not an integer.';
         const song = Queue.remove(idx);
-        BasicActions.send(message, `Removed song "${song.title}".`);
+        BasicActions.react(message);
     } catch (err) {
         console.error(`Error: ${err}`);
         BasicActions.send(message, `Error: ${err}`);

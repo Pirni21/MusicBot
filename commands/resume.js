@@ -12,7 +12,7 @@ const public = {
 function execute(message, args) {
     try {
         Queue.resume();
-        BasicActions.send(message, 'Resumed');
+        BasicActions.react(message);
     } catch (err) {
         console.error(`Error: ${err}`);
         BasicActions.send(message, `Error: ${err}`);

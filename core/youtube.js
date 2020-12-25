@@ -11,13 +11,42 @@ async function searchForName(searchParameters) {
 }
 
 async function getYoutubeIds(url) {
-    let id = url.substring(url.length - 34);
+    let id = tryToExtractIdFromYoutubeUrl(url);
     if (isValidPlaylistId(id)) return await getPlaylistIds(id);
     id = Spotify.extractSpotifyId(url);
     if (isValidSpotifyId(id)) return await getYoutubeIdsFromSpotify(url);
-    id = url.substring(url.length - 11);
+    id = tryToExtractIdFromYoutubeUrl(url);
     if (!isValidSongId(id)) throw `Cannot find a song or playlist id in url ${url}.`;
     return [id];
+}
+
+function tryToExtractIdFromYoutubeUrl(url) {
+    let temp = url;
+    if (temp.indexOf('?') >= 0) {
+        temp = temp.split('?');
+
+        if (temp.length != 2)
+            throw `Cannot find a song or playlist id in url ${url}.`;
+
+        temp = temp[temp.length - 1];
+    }
+        
+
+    if (temp.indexOf('&') >= 0) {
+        temp = temp.split('&');
+    } else {
+        temp = [temp];
+    }
+
+    if (temp.find(t => t.includes('='))) {
+        temp = temp.map(t => t.split('='));
+        temp = temp.find(t => t.includes('v'));
+
+        if (temp && temp.length != 2)
+            throw `Cannot find a song or playlist id in url ${url}.`;
+    }
+
+    return temp ? temp[temp.length - 1] : url;
 }
 
 async function getPlaylistIds(playlistId) {

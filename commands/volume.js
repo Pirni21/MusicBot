@@ -24,7 +24,7 @@ async function execute(message, args) {
         const vol = BasicActions.checkNumber(args[0], 0, 100, 'Volume has to be between ${min} and ${max}.')
         volume = vol;
         Queue.volume(vol);
-        BasicActions.send(message, `Volume changed.`);
+        BasicActions.react(message);
     } catch (err) {
         console.error(`Error: ${err}`);
         BasicActions.send(message, `Error: ${err}`);

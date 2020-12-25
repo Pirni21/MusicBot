@@ -7,7 +7,7 @@ const public = {
 }
 
 function execute(message, args) {
-    BasicActions.send(message, 'pong');
+    BasicActions.react(message, BasicActions.Emoji.pong);
 }
 
 module.exports = public;

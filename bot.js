@@ -42,7 +42,7 @@ client.on('message', async function (message) {
         }
 
         if (moderatorOnly && !isAdmin && !isModerator) {
-            BasicActions.send(message, ':sleeping:');
+            BasicActions.react(message, BasicActions.Emoji.sleep);
             return;
         }
 
@@ -50,17 +50,19 @@ client.on('message', async function (message) {
             || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
 
         if (!command) {
-            BasicActions.send(message, `There is no command with name or alias \`${commandName}\`, ${message.author}!`);
+            BasicActions.react(message, BasicActions.Emoji.unknown);
             return;
         }
 
         if (command.adminOnly && !isAdmin) {
-            BasicActions.send(message, `This is an admin only command!`);
+            BasicActions.react(message, BasicActions.Emoji.error);
+            console.log(`This is an admin only command ${message.author}`);
             return;
         }
 
         if(command.fromModerator && !isModerator && !isAdmin) {
-            BasicActions.send(message, `This is a moderator+ command!`);
+            BasicActions.react(message, BasicActions.Emoji.error);
+            console.log(`This is a moderator+ command ${message.author}`);
             return;
         }
 

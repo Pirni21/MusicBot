@@ -11,6 +11,7 @@ const public = {
 async function execute(message, args) {
     try {
         await DiscordVoice.leave(message);
+        BasicActions.react(message);
     } catch (err) {
         console.error(`Error: ${err}`);
         BasicActions.send(message, `Error: ${err}`);

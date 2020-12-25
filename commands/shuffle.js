@@ -12,7 +12,7 @@ const public = {
 async function execute(message, args) {
     try {
         let state = Queue.shuffle();
-        BasicActions.send(message, `Shuffle ${state ? 'on' : 'off'}`);
+        BasicActions.react(message, `${state ? BasicActions.Emoji.shuffle : BasicActions.Emoji.straight}`);
     } catch (err) {
         console.error(`Error: ${err}`);
         BasicActions.send(message, `Error: ${err}`);

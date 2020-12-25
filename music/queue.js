@@ -5,9 +5,7 @@ const Metadata = require('../core/metadata');
 const config = require('../configs/config.json');
 const fs = require('fs');
 const player = require('./player');
-const { download } = require('./downloader');
 const BasicActions = require('../core/basics');
-const { time } = require('console');
 
 AuxPlayer.init(songFinished);
 let songQueue = [];
@@ -22,13 +20,14 @@ async function play(message, id, permanent) {
     let foundSong = findSongById(id);
     if (!foundSong) foundSong = await findInFileSystem(id);
     if (!foundSong) {
-        BasicActions.send(message, `Added song with id "${id}" to download list`);
+        BasicActions.react(message, BasicActions.Emoji.download);
+        console.log(`Added song with id "${id}" to download list`)
         addToDownloadList(message, id, permanent)
         return;
     }
 
-    BasicActions.send(message, `Added song "${foundSong.title}" (${foundSong.videoId}) to the queue`);
-    console.log(`${foundSong.title} has been added from filesystem or queue`);
+    BasicActions.react(message, BasicActions.Emoji.thumbsup);
+    console.log(`${foundSong.title} (${foundSong.videoId}) has been added from filesystem or queue`);
     songQueue.push(foundSong);
     playSong();
 }
@@ -61,12 +60,13 @@ async function downloadWrapper(toDownload) {
         metadata.file = song.file;
         songQueue.push(metadata);
         console.log(metadata.title + ' downloaded');
-        BasicActions.send(toDownload.message, `Added song "${metadata.title}" to the queue`);
+        BasicActions.react(toDownload.message, BasicActions.Emoji.thumbsup);
         tryToDownload();
         playSong();
     } catch (err) {
         currDownloading--;
         console.error(`Error: ${err}`);
+        BasicActions.react(toDownload.message, BasicActions.Emoji.error);
         BasicActions.send(toDownload.message, `Error: ${err}`);
     }
 }

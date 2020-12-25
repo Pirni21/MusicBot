@@ -6,15 +6,10 @@ const spotify = new Spotify({
     clientSecret: config.spotify.secret
 });
 
-spotify.clientCredentialsGrant()
-  .then((data) => {
-    spotify.setAccessToken(data.body['access_token']);
-  })
-  .catch((err) => {
-    console.error('Something went wrong when retrieving an access token from spotify: ', err);
-  });
-
 async function getSpotifyTrackNames(url) {
+    const spotifyRes = await spotify.clientCredentialsGrant()
+    spotify.setAccessToken(spotifyRes.body['access_token']);
+
     const isPlaylist = url.includes('playlist');
     const urlId = extractSpotifyId(url);
     const details = await getSpotifyDetails(urlId, isPlaylist);

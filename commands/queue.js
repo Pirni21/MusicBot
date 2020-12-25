@@ -20,7 +20,7 @@ function execute(message, args) {
         } else {
             returnValue += 'Empty!';
         }
-        BasicActions.send(message, returnValue);
+        BasicActions.send(message, returnValue, 60000);
     } catch (err) {
         console.error(`Error: ${err}`);
         BasicActions.send(message, `Error: ${err}`);

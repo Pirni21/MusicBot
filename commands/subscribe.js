@@ -12,7 +12,7 @@ const public = {
 function execute(message, args) {
     try {
         DiscordVoice.subscribe(message.channel);
-        BasicActions.send(message, `Subscribed channel ${message.channel.name}.`);
+        BasicActions.react(message);
     } catch (err) {
         console.error(`Error: ${err}`);
         BasicActions.send(message, `Error: ${err}`);

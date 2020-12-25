@@ -1,4 +1,17 @@
 var Module = (function () {
+    const Emoji = Object.freeze({ 
+        success: '👌', 
+        thumbsup: '👍', 
+        error: '❌', // unused
+        sleep: '💤', 
+        pong: '🏓', 
+        unknown: '❓', 
+        internalError: '🆘', // unused
+        shuffle: '🔀', 
+        straight: '➡', 
+        download: '⬇️' 
+    });
+
     const public = {
         send: send,
         reply: reply,
@@ -7,19 +20,26 @@ var Module = (function () {
         getMessage: getMessage,
         fail_if: fail_if,
         convertTime: convertTime,
-        checkNumber: checkNumber
+        checkNumber: checkNumber,
+        react: react,
+        Emoji: Emoji
     }
 
-    function send(message, data, path) {
-        if (!path) {
-            return message.channel.send(data, { split: true })
-                .catch(console.error);
-        }
+    function send(message, data, deleteAfter) {
+        return message.channel.send(data, { split: true })
+            .then(async (msges) => {
+                if (deleteAfter != undefined && deleteAfter != null) {
+                    let promises;
+                    promises = msges.map(msg => msg.delete({ timeout: deleteAfter }));
+                    await Promise.all(promises);
+                }
+            })
+            .catch(console.error);
+    }
 
-        message.channel.send(data, {
-            files: [path]
-        })
-            .catch(console.error);;
+    function react(message, emoji = Emoji.success) {
+        return message.react(emoji)
+            .catch(console.error);
     }
 
     function reply(message, data) {
@@ -52,7 +72,7 @@ var Module = (function () {
     function convertTime(sec) {
         let tempDur = Math.round(sec);
         let seconds = tempDur % 60;
-        return `${Math.floor(tempDur / 60)}:${seconds < 10 ? '0': ''}${seconds}`;
+        return `${Math.floor(tempDur / 60)}:${seconds < 10 ? '0' : ''}${seconds}`;
     }
 
     function checkNumber(arg, min, max, notInRangeError = 'Number ${nr} is not in range.') {
@@ -68,7 +88,7 @@ var Module = (function () {
     }
 
     function replaceIfExits(content, searchFor, replaceWith) {
-        if (searchFor != undefined && searchFor != null && replaceWith != undefined  && replaceWith != null && content.includes(searchFor)) {
+        if (searchFor != undefined && searchFor != null && replaceWith != undefined && replaceWith != null && content.includes(searchFor)) {
             content = content.replace(searchFor, replaceWith)
         }
         return content;

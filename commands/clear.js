@@ -11,7 +11,7 @@ const public = {
 function execute(message, args) {
     try {
         Queue.clear();
-        BasicActions.send(message, 'Queue cleared.');
+        BasicActions.react(message);
     } catch (err) {
         console.error(`Error: ${err}`);
         BasicActions.send(message, `Error: ${err}`);
