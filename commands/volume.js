@@ -1,7 +1,6 @@
 const BasicActions = require('../core/basics');
 const Queue = require('../music/queue');
-
-let volume = 100;
+const {KEYS, get, set} = require('../configs/runtimeConfigs');
 
 const public = {
     name: 'volume',
@@ -15,14 +14,14 @@ const public = {
 async function execute(message, args) {
     try {
         if (args.length == 0) {
-            BasicActions.send(message, `Volume: ${volume}%.`);
+            BasicActions.send(message, `Volume: ${get(KEYS.volume)}%.`);
             return;
         }
 
         if (args.length != 1) throw 'Args length has to be 1.';
 
         const vol = BasicActions.checkNumber(args[0], 0, 100, 'Volume has to be between ${min} and ${max}.')
-        volume = vol;
+        set(KEYS.volume, vol);
         Queue.volume(vol);
         BasicActions.react(message);
     } catch (err) {
