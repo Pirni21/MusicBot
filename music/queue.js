@@ -44,7 +44,6 @@ function addToDownloadList(message, id, permanent) {
 function tryToDownload() {
     if (get(KEYS.currDownloading) < config.downloadLimit && downloadList.length > 0) {
         set(KEYS.currDownloading, get(KEYS.currDownloading) + 1);
-        set(KEYS.totalDownloading, get(KEYS.totalDownloading) - 1);
 
         let toDownload = downloadList.shift();
         downloadWrapper(toDownload);
@@ -69,6 +68,7 @@ async function downloadWrapper(toDownload) {
         BasicActions.send(toDownload.message, `Error: ${err}`);
     }
     set(KEYS.currDownloading, get(KEYS.currDownloading) - 1);
+    set(KEYS.totalDownloading, get(KEYS.totalDownloading) - 1);
 }
 
 function skip(ignoreCheck = false) {

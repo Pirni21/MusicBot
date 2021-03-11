@@ -14,7 +14,7 @@ function download(id, permanent) {
                 songpath = config.permMusicDir;
             else
                 songpath = config.musicDir;
-            
+
             const ytdl = spawn('youtube-dl', [
                 '-f', 'bestaudio',
                 '--extract-audio',
@@ -42,7 +42,7 @@ function download(id, permanent) {
                 if (err)
                     reject("Unable to download!");
                 else
-                    resolve({file: `${songpath}/${id}.mp3`});
+                    resolve({ file: `${songpath}/${id}.mp3` });
             });
         } catch (err) {
             reject(err);
@@ -67,9 +67,11 @@ function deleteAll() {
     fs.readdir(config.musicDir, (err, files) => {
         if (err) return console.error('Delete all 1 error: ' + err);
         for (const file of files) {
-            fs.unlink(path.join(config.musicDir, file), err => {
-                if (err) console.error('Delete all error: ' + err);
-            });
+            if (!file.includes('.gitkeep')) {
+                fs.unlink(path.join(config.musicDir, file), err => {
+                    if (err) console.error('Delete all error: ' + err);
+                });
+            }
         }
     });
 }
