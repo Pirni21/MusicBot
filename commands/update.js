@@ -3,6 +3,7 @@ const { spawn } = require('child_process');
 
 const public = {
     name: 'update',
+    aliases: ['restart'],
     description: 'Updates the bot to the newest version and restarts it. WARNING: The Queue and other things will be reset!',
     adminOnly: true,
     execute: execute

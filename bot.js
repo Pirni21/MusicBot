@@ -3,11 +3,10 @@ const fs = require('fs');
 const Discord = require('discord.js');
 const BasicActions = require('./core/basics');
 const DiscordPlayer = require('./music/discord');
+const runtimeConfig = require('./configs/runtimeConfigs');
 const client = new Discord.Client();
 client.commands = new Discord.Collection();
 const cooldowns = new Discord.Collection();
-
-let moderatorOnly = false;
 
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 
@@ -34,14 +33,10 @@ client.on('message', async function (message) {
 
         const isAdmin = admins.includes(message.author.id);
         const isModerator = moderators.includes(message.author.id);
-        
-        if (commandName == 'mo' && (isAdmin || isModerator)) {
-            moderatorOnly = !moderatorOnly;
-            BasicActions.send(message, `${moderatorOnly ? 'on' : 'off'}`);
-            return;
-        }
+        message.isAdmin = isAdmin;
+        message.isModerator = isModerator;
 
-        if (moderatorOnly && !isAdmin && !isModerator) {
+        if (runtimeConfig.get(runtimeConfig.KEYS.mo) && !isAdmin && !isModerator) {
             BasicActions.react(message, BasicActions.Emoji.sleep);
             return;
         }

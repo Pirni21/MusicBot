@@ -6,15 +6,13 @@ const config = require('../configs/config.json');
 const fs = require('fs');
 const player = require('./player');
 const BasicActions = require('../core/basics');
+const {set, get, KEYS} = require('../configs/runtimeConfigs');
 
 AuxPlayer.init(songFinished);
 let songQueue = [];
 let downloadList = [];
-let currDownloading = 0;
 
 let interrupt = false;
-let paused = false;
-let isShuffling = false;
 
 async function play(message, id, permanent) {
     let foundSong = findSongById(id);
@@ -38,13 +36,16 @@ function addToDownloadList(message, id, permanent) {
         permanent,
         message
     });
+    set(KEYS.totalDownloading, get(KEYS.totalDownloading) + 1);
 
     tryToDownload();
 }
 
 function tryToDownload() {
-    if (currDownloading < config.downloadLimit && downloadList.length > 0) {
-        currDownloading++;
+    if (get(KEYS.currDownloading) < config.downloadLimit && downloadList.length > 0) {
+        set(KEYS.currDownloading, get(KEYS.currDownloading) + 1);
+        set(KEYS.totalDownloading, get(KEYS.totalDownloading) - 1);
+
         let toDownload = downloadList.shift();
         downloadWrapper(toDownload);
     }
@@ -56,7 +57,6 @@ async function downloadWrapper(toDownload) {
         let song = await Downloader.download(toDownload.id, toDownload.permanent);
         let metadata = await Metadata.get(song.file);
         song.duration = metadata.duration;
-        currDownloading--;
         metadata.file = song.file;
         songQueue.push(metadata);
         console.log(metadata.title + ' downloaded');
@@ -64,11 +64,11 @@ async function downloadWrapper(toDownload) {
         tryToDownload();
         playSong();
     } catch (err) {
-        currDownloading--;
         console.error(`Error: ${err}`);
         BasicActions.react(toDownload.message, BasicActions.Emoji.error);
         BasicActions.send(toDownload.message, `Error: ${err}`);
     }
+    set(KEYS.currDownloading, get(KEYS.currDownloading) - 1);
 }
 
 function skip(ignoreCheck = false) {
@@ -98,23 +98,25 @@ function reset() {
     interrupt = true;
     DiscordPlayer.reset();
     clear();
-    currDownloading = 0;
+    downloadList = [];
+    set(KEYS.totalDownloading, 0);
+    set(KEYS.currDownloading, 0);
     interrupt = false;
 }
 
 function pause() {
-    paused = true;
+    set(KEYS.pause, true);
     skip(true);
 }
 
 function resume() {
-    paused = false;
+    set(KEYS.pause, false);
     playSong();
 }
 
 function shuffle() {
-    isShuffling = !isShuffling;
-    return isShuffling;
+    set(KEYS.shuffle, !get(KEYS.shuffle))
+    return get(KEYS.shuffle);
 }
 
 function volume(percent) {
@@ -142,7 +144,7 @@ async function progress() {
 }
 
 function songFinished() {
-    if (!AuxPlayer.running() && songQueue.length >= 1 && !interrupt && !paused) {
+    if (!AuxPlayer.running() && songQueue.length >= 1 && !interrupt && !get(KEYS.pause)) {
         console.log('Finished playing song: ' + songQueue[0].title);
         let toDelete = songQueue[0];
         songQueue = songQueue.slice(1);
@@ -152,8 +154,8 @@ function songFinished() {
 }
 
 function playSong() {
-    if (!AuxPlayer.running() && songQueue.length >= 1 && !interrupt && !paused) {
-        if (isShuffling && songQueue.length > 1) {
+    if (!AuxPlayer.running() && songQueue.length >= 1 && !interrupt && !get(KEYS.pause)) {
+        if (get(KEYS.shuffle) && songQueue.length > 1) {
             let idx = Math.round(Math.random() * (songQueue.length - 1));
             let song = songQueue.splice(idx, 1)[0];
             songQueue.unshift(song);
