@@ -12,14 +12,14 @@
   "dependencies": {
     "@discordjs/opus": "^0.3.3",
     "discord": "^0.8.2",
-    "discord.js": "^12.5.1",
-    "ffmpeg-static": "^4.2.7",
+    "discord.js": "^12.5.3",
+    "ffmpeg-static": "^4.3.0",
     "mpg123": "^0.2.3",
     "music-metadata": "^6.4.0",
     "node-omxplayer": "^0.6.1",
     "opusscript": "0.0.7",
-    "spotify-web-api-node": "^5.0.0",
+    "spotify-web-api-node": "^5.0.2",
     "youtube-playlist": "^1.0.4",
-    "yt-search": "^2.5.1"
+    "yt-search": "^2.8.0"
   }
 }

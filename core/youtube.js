@@ -46,6 +46,10 @@ function tryToExtractIdFromYoutubeUrl(url) {
             throw `Cannot find a song or playlist id in url ${url}.`;
     }
 
+    if (temp && temp.length == 1 && temp[0] == url && url.includes('/')) {
+        temp = url.split('/');
+    }
+
     return temp ? temp[temp.length - 1] : url;
 }
 
