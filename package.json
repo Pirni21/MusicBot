@@ -15,7 +15,7 @@
     "discord.js": "^12.5.3",
     "ffmpeg-static": "^4.3.0",
     "mpg123": "^0.2.3",
-    "music-metadata": "^6.4.0",
+    "music-metadata": "^8.1.0",
     "node-omxplayer": "^0.6.1",
     "opusscript": "0.0.7",
     "spotify-web-api-node": "^5.0.2",
